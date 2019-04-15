@@ -636,8 +636,8 @@ func (c *ServerConn) RemoveDirRecur(path string) error {
 // MakeDir issues a MKD FTP command to create the specified directory on the
 // remote FTP server.
 func (c *ServerConn) MakeDir(path string) error {
-	_, _, err := c.cmd(StatusPathCreated, "MKD %s", path)
-	return err
+	code, msg, err := c.cmd(StatusPathCreated, "MKD %s", path)
+	return code, msg, err
 }
 
 // RemoveDir issues a RMD FTP command to remove the specified directory from
