@@ -484,23 +484,23 @@ func (c *ServerConn) List(path string) (entries []*Entry, err error) {
 
 // ChangeDir issues a CWD FTP command, which changes the current directory to
 // the specified path.
-func (c *ServerConn) ChangeDir(path string) error {
-	_, _, err := c.cmd(StatusRequestedFileActionOK, "CWD %s", path)
-	return err
+func (c *ServerConn) ChangeDir(path string) (int, string, error) {
+	code, msg, err := c.cmd(StatusRequestedFileActionOK, "CWD %s", path)
+	return code, msg, err
 }
 
 // ChangeDirToParent issues a CDUP FTP command, which changes the current
 // directory to the parent directory.  This is similar to a call to ChangeDir
 // with a path set to "..".
-func (c *ServerConn) ChangeDirToParent() error {
-	_, _, err := c.cmd(StatusRequestedFileActionOK, "CDUP")
-	return err
+func (c *ServerConn) ChangeDirToParent() (int, string, error) {
+	code, msg, err := c.cmd(StatusRequestedFileActionOK, "CDUP")
+	return code, msg, err
 }
 
 // CurrentDir issues a PWD FTP command, which Returns the path of the current
 // directory.
-func (c *ServerConn) CurrentDir() (string, error) {
-	_, msg, err := c.cmd(StatusPathCreated, "PWD")
+func (c *ServerConn) CurrentDir() (int, string, error) {
+	code, msg, err := c.cmd(StatusPathCreated, "PWD")
 	if err != nil {
 		return "", err
 	}
@@ -512,7 +512,7 @@ func (c *ServerConn) CurrentDir() (string, error) {
 		return "", errors.New("unsuported PWD response format")
 	}
 
-	return msg[start+1 : end], nil
+	return code, msg[start+1 : end], nil
 }
 
 // FileSize issues a SIZE FTP command, which Returns the size of the file
@@ -576,31 +576,31 @@ func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) error {
 }
 
 // Rename renames a file on the remote FTP server.
-func (c *ServerConn) Rename(from, to string) error {
-	_, _, err := c.cmd(StatusRequestFilePending, "RNFR %s", from)
+func (c *ServerConn) Rename(from, to string) (int, string, error) {
+	code, msg, err := c.cmd(StatusRequestFilePending, "RNFR %s", from)
 	if err != nil {
 		return err
 	}
 
-	_, _, err = c.cmd(StatusRequestedFileActionOK, "RNTO %s", to)
-	return err
+	code, msg, err = c.cmd(StatusRequestedFileActionOK, "RNTO %s", to)
+	return code, msg, err
 }
 
 // Delete issues a DELE FTP command to delete the specified file from the
 // remote FTP server.
-func (c *ServerConn) Delete(path string) error {
-	_, _, err := c.cmd(StatusRequestedFileActionOK, "DELE %s", path)
-	return err
+func (c *ServerConn) Delete(path string) (int, string, error) {
+	code, msg, err := c.cmd(StatusRequestedFileActionOK, "DELE %s", path)
+	return code, msg, err
 }
 
 // RemoveDirRecur deletes a non-empty folder recursively using
 // RemoveDir and Delete
 func (c *ServerConn) RemoveDirRecur(path string) error {
-	err := c.ChangeDir(path)
+	_, _, err := c.ChangeDir(path)
 	if err != nil {
 		return err
 	}
-	currentDir, err := c.CurrentDir()
+	_, currentDir, err := c.CurrentDir()
 	if err != nil {
 		return err
 	}
@@ -613,23 +613,23 @@ func (c *ServerConn) RemoveDirRecur(path string) error {
 	for _, entry := range entries {
 		if entry.Name != ".." && entry.Name != "." {
 			if entry.Type == EntryTypeFolder {
-				err = c.RemoveDirRecur(currentDir + "/" + entry.Name)
+				_, _, err = c.RemoveDirRecur(currentDir + "/" + entry.Name)
 				if err != nil {
 					return err
 				}
 			} else {
-				err = c.Delete(entry.Name)
+				_, _, err = c.Delete(entry.Name)
 				if err != nil {
 					return err
 				}
 			}
 		}
 	}
-	err = c.ChangeDirToParent()
+	_, _, err = c.ChangeDirToParent()
 	if err != nil {
 		return err
 	}
-	err = c.RemoveDir(currentDir)
+	_, _, err = c.RemoveDir(currentDir)
 	return err
 }
 
@@ -642,9 +642,9 @@ func (c *ServerConn) MakeDir(path string) (int, string, error) {
 
 // RemoveDir issues a RMD FTP command to remove the specified directory from
 // the remote FTP server.
-func (c *ServerConn) RemoveDir(path string) error {
-	_, _, err := c.cmd(StatusRequestedFileActionOK, "RMD %s", path)
-	return err
+func (c *ServerConn) RemoveDir(path string) (int, string, error) {
+	code, msg, err := c.cmd(StatusRequestedFileActionOK, "RMD %s", path)
+	return code, msg, err
 }
 
 // NoOp issues a NOOP FTP command.
