@@ -35,7 +35,8 @@ type ServerConn struct {
 	host    string
 
 	// Server capabilities discovered at runtime
-	features      map[string]string
+	// Capitalise Features to export it
+	Features      map[string]string
 	skipEPSV      bool
 	mlstSupported bool
 }
