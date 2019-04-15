@@ -1,16 +1,16 @@
 # goftp #
 
-[![Build Status](https://travis-ci.org/jlaffaye/ftp.svg?branch=master)](https://travis-ci.org/jlaffaye/ftp)
-[![Coverage Status](https://coveralls.io/repos/jlaffaye/ftp/badge.svg?branch=master&service=github)](https://coveralls.io/github/jlaffaye/ftp?branch=master)
-[![Go ReportCard](http://goreportcard.com/badge/jlaffaye/ftp)](http://goreportcard.com/report/jlaffaye/ftp)
-[![godoc.org](https://godoc.org/github.com/jlaffaye/ftp?status.svg)](http://godoc.org/github.com/jlaffaye/ftp)
+[![Build Status](https://travis-ci.org/ghilde/ftp.svg?branch=master)](https://travis-ci.org/ghilde/ftp)
+[![Coverage Status](https://coveralls.io/repos/ghilde/ftp/badge.svg?branch=master&service=github)](https://coveralls.io/github/ghilde/ftp?branch=master)
+[![Go ReportCard](http://goreportcard.com/badge/ghilde/ftp)](http://goreportcard.com/report/ghilde/ftp)
+[![godoc.org](https://godoc.org/github.com/ghilde/ftp?status.svg)](http://godoc.org/github.com/ghilde/ftp)
 
-A FTP client package for Go
+A FTP client package for Go. Forked from (https://github.com/jlaffaye) and modified for my own customisations, mostly to make available any and all messages that return from the FTP server.
 
 ## Install ##
 
 ```
-go get -u github.com/jlaffaye/ftp
+go get -u github.com/ghildebr/ftp
 ```
 
 ## Example ##
