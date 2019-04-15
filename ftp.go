@@ -551,7 +551,7 @@ func (c *ServerConn) RetrFrom(path string, offset uint64) (*Response, error) {
 // Stor creates the specified file with the content of the io.Reader.
 //
 // Hint: io.Pipe() can be used if an io.Writer is required.
-func (c *ServerConn) Stor(path string, r io.Reader) error {
+func (c *ServerConn) Stor(path string, r io.Reader) (int, string, error) {
 	return c.StorFrom(path, r, 0)
 }
 
@@ -563,7 +563,7 @@ func (c *ServerConn) Stor(path string, r io.Reader) error {
 func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) (int, string, error) {
 	conn, err := c.cmdDataConnFrom(offset, "STOR %s", path)
 	if err != nil {
-		return err
+		return 0, "", err
 	}
 
 	_, err = io.Copy(conn, r)
@@ -572,8 +572,8 @@ func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) (int, str
 		return err
 	}
 
-	code, msg, err = c.conn.ReadResponse(StatusClosingDataConnection)
-	return code, msg, err
+	code, msg, rrerr := c.conn.ReadResponse(StatusClosingDataConnection)
+	return code, msg, rrerr
 }
 
 // Rename renames a file on the remote FTP server.
