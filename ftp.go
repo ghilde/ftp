@@ -502,17 +502,18 @@ func (c *ServerConn) ChangeDirToParent() (int, string, error) {
 func (c *ServerConn) CurrentDir() (int, string, error) {
 	code, msg, err := c.cmd(StatusPathCreated, "PWD")
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 
 	start := strings.Index(msg, "\"")
 	end := strings.LastIndex(msg, "\"")
 
 	if start == -1 || end == -1 {
-		return "", errors.New("unsuported PWD response format")
+		return 0, "", errors.New("unsupported PWD response format")
 	}
 
-	return code, msg[start+1 : end], nil
+	//return code, msg[start+1 : end], nil
+	return code, msg, err
 }
 
 // FileSize issues a SIZE FTP command, which Returns the size of the file
@@ -579,7 +580,7 @@ func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) error {
 func (c *ServerConn) Rename(from, to string) (int, string, error) {
 	code, msg, err := c.cmd(StatusRequestFilePending, "RNFR %s", from)
 	if err != nil {
-		return err
+		return 0, "", err
 	}
 
 	code, msg, err = c.cmd(StatusRequestedFileActionOK, "RNTO %s", to)
@@ -613,7 +614,7 @@ func (c *ServerConn) RemoveDirRecur(path string) error {
 	for _, entry := range entries {
 		if entry.Name != ".." && entry.Name != "." {
 			if entry.Type == EntryTypeFolder {
-				_, _, err = c.RemoveDirRecur(currentDir + "/" + entry.Name)
+				err = c.RemoveDirRecur(currentDir + "/" + entry.Name)
 				if err != nil {
 					return err
 				}
