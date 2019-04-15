@@ -569,7 +569,7 @@ func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) (int, str
 	_, err = io.Copy(conn, r)
 	conn.Close()
 	if err != nil {
-		return err
+		return 0, "", err
 	}
 
 	code, msg, rrerr := c.conn.ReadResponse(StatusClosingDataConnection)
