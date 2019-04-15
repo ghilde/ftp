@@ -103,7 +103,7 @@ func DialWithOptions(addr string, options ...DialOption) (*ServerConn, error) {
 
 	c := &ServerConn{
 		options:  do,
-		features: make(map[string]string),
+		Features: make(map[string]string),
 		conn:     textproto.NewConn(tconn),
 		host:     remoteAddr.IP.String(),
 	}
@@ -120,7 +120,7 @@ func DialWithOptions(addr string, options ...DialOption) (*ServerConn, error) {
 		return nil, err
 	}
 
-	if _, mlstSupported := c.features["MLST"]; mlstSupported {
+	if _, mlstSupported := c.Features["MLST"]; mlstSupported {
 		c.mlstSupported = true
 	}
 
@@ -260,7 +260,7 @@ func (c *ServerConn) feat() error {
 			commandDesc = featureElements[1]
 		}
 
-		c.features[command] = commandDesc
+		c.Features[command] = commandDesc
 	}
 
 	return nil
@@ -268,7 +268,7 @@ func (c *ServerConn) feat() error {
 
 // setUTF8 issues an "OPTS UTF8 ON" command.
 func (c *ServerConn) setUTF8() error {
-	if _, ok := c.features["UTF8"]; !ok {
+	if _, ok := c.Features["UTF8"]; !ok {
 		return nil
 	}
 
