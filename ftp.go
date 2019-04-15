@@ -560,7 +560,7 @@ func (c *ServerConn) Stor(path string, r io.Reader) error {
 // on the server will start at the given file offset.
 //
 // Hint: io.Pipe() can be used if an io.Writer is required.
-func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) error {
+func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) (int, string, error) {
 	conn, err := c.cmdDataConnFrom(offset, "STOR %s", path)
 	if err != nil {
 		return err
@@ -572,8 +572,8 @@ func (c *ServerConn) StorFrom(path string, r io.Reader, offset uint64) error {
 		return err
 	}
 
-	_, _, err = c.conn.ReadResponse(StatusClosingDataConnection)
-	return err
+	code, msg, err = c.conn.ReadResponse(StatusClosingDataConnection)
+	return code, msg, err
 }
 
 // Rename renames a file on the remote FTP server.
