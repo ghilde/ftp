@@ -539,13 +539,13 @@ func (c *ServerConn) Retr(path string) (*Response, error) {
 // FTP server, the server will not send the offset first bytes of the file.
 //
 // The returned ReadCloser must be closed to cleanup the FTP data connection.
-func (c *ServerConn) RetrFrom(path string, offset uint64) (*Response, error) {
+func (c *ServerConn) RetrFrom(path string, offset uint64) (int, string, *Response, error) {
 	conn, err := c.cmdDataConnFrom(offset, "RETR %s", path)
 	if err != nil {
 		return nil, err
 	}
-
-	return &Response{conn: conn, c: c}, nil
+	code, msg, rrerr := c.conn.ReadResponse(StatusClosingDataConnection)
+	return code, msg, &Response{conn: conn, c: c}, nil
 }
 
 // Stor issues a STOR FTP command to store a file to the remote FTP server.
