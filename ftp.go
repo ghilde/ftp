@@ -545,7 +545,7 @@ func (c *ServerConn) RetrFrom(path string, offset uint64) (int, string, *Respons
 		return 0, "", nil, err
 	}
 	code, msg, rrerr := c.conn.ReadResponse(StatusClosingDataConnection)
-	return code, msg, &Response{conn: conn, c: c}, nil
+	return code, msg, &Response{conn: conn, c: c}, rerr
 }
 
 // Stor issues a STOR FTP command to store a file to the remote FTP server.
