@@ -5,7 +5,9 @@
 [![Go ReportCard](http://goreportcard.com/badge/ghilde/ftp)](http://goreportcard.com/report/ghilde/ftp)
 [![godoc.org](https://godoc.org/github.com/ghilde/ftp?status.svg)](http://godoc.org/github.com/ghilde/ftp)
 
-A FTP client package for Go. Forked from (https://github.com/jlaffaye) and modified for my own customisations, mostly to make available any and all messages that return from the FTP server.
+A FTP client package for Go. Forked from (https://github.com/jlaffaye) and modified for my own customisations. Two major changes (list may change over time):
+1. Make available any and all messages that return from the FTP server
+2. Improve upload (STOR) functionality
 
 ## Install ##
 
